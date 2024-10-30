@@ -1,2 +1,4 @@
 include requirements.txt
+include URLs.csv
+include xpath.csv
 recursive-include goodreads_scraper *
