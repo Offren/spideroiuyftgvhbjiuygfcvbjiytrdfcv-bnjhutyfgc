@@ -1,31 +1,42 @@
 import scrapy
-from goodreads_scraper.items import BookItem
+from goodreads_scraper.items import ProfileItem
 
 class GoodreadsSpider(scrapy.Spider):
     name = 'goodreads'
     allowed_domains = ['goodreads.com']
-    start_urls = ['https://www.goodreads.com/search?q=social+justice+books']
+    
+    def __init__(self, *args, **kwargs):
+        super(GoodreadsSpider, self).__init__(*args, **kwargs)
+        self.start_urls = self.load_urls()
+        self.xpaths = self.load_xpaths()
+        
+    def load_urls(self):
+        urls = []
+        with open('URLs.csv', 'r') as f:
+            for line in f:
+                url = line.strip()
+                if url:
+                    urls.append(url)
+        return urls
+        
+    def load_xpaths(self):
+        xpaths = []
+        with open('xpath.csv', 'r') as f:
+            for line in f:
+                xpath = line.strip()
+                if xpath:
+                    xpaths.append(xpath)
+        return xpaths
 
     def parse(self, response):
-        # List of XPath patterns to try for each book URL
-        url_xpaths = [
-            '//div[contains(@class, "article")]//section[2]/span[1]/div/a/@href',
-            '//div[contains(@class, "bookTitle")]/@href',
-            '//a[contains(@class, "bookTitle")]/@href'
-        ]
-        
-        # Try each XPath pattern
-        for xpath in url_xpaths:
-            urls = response.xpath(xpath).getall()
-            if urls:
-                for url in urls:
+        # Try each XPath pattern for profile URLs
+        for xpath in self.xpaths:
+            profile_urls = response.xpath(xpath).getall()
+            if profile_urls:
+                for url in profile_urls:
                     # Make sure URL is absolute
                     full_url = response.urljoin(url)
-                    item = BookItem()
+                    item = ProfileItem()
                     item['url'] = full_url
+                    item['source_url'] = response.url
                     yield item
-
-        # Follow pagination links
-        next_page = response.xpath('//a[contains(@class, "next_page")]/@href').get()
-        if next_page:
-            yield response.follow(next_page, self.parse)
