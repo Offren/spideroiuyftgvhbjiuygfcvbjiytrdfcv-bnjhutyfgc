@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     entry_points={'scrapy': ['settings = goodreads_scraper.settings']},
     install_requires=[
-        'scrapy',
-        'scrapy-user-agents'
+        'scrapy>=2.11.0',
+        'scrapy-user-agents>=0.1.1'
     ]
 )
