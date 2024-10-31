@@ -1,3 +1,4 @@
+# settings.py
 BOT_NAME = 'goodreads_scraper'
 
 SPIDER_MODULES = ['goodreads_scraper.spiders']
@@ -15,4 +16,5 @@ DOWNLOAD_DELAY = 3
 # Enable or disable downloader middlewares
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-    'scrap
+    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
+}
