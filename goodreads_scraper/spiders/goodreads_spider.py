@@ -1,5 +1,7 @@
 import scrapy
+import csv
 import os
+import pkgutil
 from goodreads_scraper.items import ProfileItem
 
 class GoodreadsSpider(scrapy.Spider):
@@ -8,41 +10,40 @@ class GoodreadsSpider(scrapy.Spider):
     
     def __init__(self, *args, **kwargs):
         super(GoodreadsSpider, self).__init__(*args, **kwargs)
-        # Get the project root directory
-        project_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-        
-        # Load URLs and XPaths from project root
-        self.urls_file = os.path.join(project_dir, 'URLs.csv')
-        self.xpath_file = os.path.join(project_dir, 'xpath.csv')
-        
         self.start_urls = self.load_urls()
         self.xpaths = self.load_xpaths()
         
     def load_urls(self):
         urls = []
         try:
-            with open(self.urls_file, 'r') as f:
-                for line in f:
+            # Load URLs from package data
+            urls_data = pkgutil.get_data('goodreads_scraper', 'data/URLs.csv')
+            if urls_data:
+                for line in urls_data.decode('utf-8').splitlines():
                     url = line.strip()
                     if url:
                         urls.append(url)
-            return urls
-        except FileNotFoundError:
-            self.logger.error(f"URLs file not found at {self.urls_file}")
-            return []
+            else:
+                self.logger.error("URLs.csv not found in package data")
+        except Exception as e:
+            self.logger.error(f"Error loading URLs: {e}")
+        return urls
         
     def load_xpaths(self):
         xpaths = []
         try:
-            with open(self.xpath_file, 'r') as f:
-                for line in f:
+            # Load XPaths from package data
+            xpath_data = pkgutil.get_data('goodreads_scraper', 'data/xpath.csv')
+            if xpath_data:
+                for line in xpath_data.decode('utf-8').splitlines():
                     xpath = line.strip()
                     if xpath:
                         xpaths.append(xpath)
-            return xpaths
-        except FileNotFoundError:
-            self.logger.error(f"XPaths file not found at {self.xpath_file}")
-            return []
+            else:
+                self.logger.error("xpath.csv not found in package data")
+        except Exception as e:
+            self.logger.error(f"Error loading XPaths: {e}")
+        return xpaths
 
     def parse(self, response):
         # Try each XPath pattern for profile URLs
