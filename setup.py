@@ -12,8 +12,7 @@ setup(
     },
     install_requires=[
         'scrapy>=2.11.0',
-        'scrapy-user-agents>=0.1.1',
-        'sh-scrapy>=0.16.0'
+        'scrapy-user-agents>=0.1.1'
     ],
     zip_safe=False
 )
