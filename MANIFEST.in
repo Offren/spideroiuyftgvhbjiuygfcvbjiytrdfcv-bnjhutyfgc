@@ -1,3 +1,2 @@
 include requirements.txt
 recursive-include goodreads_scraper/data *.csv
-recursive-include goodreads_scraper *
