@@ -1,7 +1,6 @@
 import scrapy
 import csv
 import os
-from pathlib import Path
 from goodreads_scraper.items import ProfileItem
 
 class GoodreadsSpider(scrapy.Spider):
@@ -16,10 +15,8 @@ class GoodreadsSpider(scrapy.Spider):
     def load_urls(self):
         urls = []
         try:
-            data_dir = Path(__file__).parent.parent / 'data'
-            urls_file = data_dir / 'URLs.csv'
-            
-            with open(urls_file, 'r', encoding='utf-8') as f:
+            data_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'URLs.csv')
+            with open(data_path, 'r', encoding='utf-8') as f:
                 for line in f:
                     url = line.strip().strip(',')
                     if url:
@@ -32,10 +29,8 @@ class GoodreadsSpider(scrapy.Spider):
     def load_xpaths(self):
         xpaths = []
         try:
-            data_dir = Path(__file__).parent.parent / 'data'
-            xpath_file = data_dir / 'xpath.csv'
-            
-            with open(xpath_file, 'r', encoding='utf-8') as f:
+            data_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'xpath.csv')
+            with open(data_path, 'r', encoding='utf-8') as f:
                 for line in f:
                     xpath = line.strip()
                     if xpath:
@@ -46,12 +41,10 @@ class GoodreadsSpider(scrapy.Spider):
         return xpaths
 
     def parse(self, response):
-        # Try each XPath pattern for profile URLs
         for xpath in self.xpaths:
             profile_urls = response.xpath(xpath).getall()
             if profile_urls:
                 for url in profile_urls:
-                    # Make sure URL is absolute
                     full_url = response.urljoin(url)
                     item = ProfileItem()
                     item['url'] = full_url
