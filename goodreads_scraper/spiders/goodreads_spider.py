@@ -1,7 +1,7 @@
 import scrapy
 import csv
 import os
-import pkgutil
+from pathlib import Path
 from goodreads_scraper.items import ProfileItem
 
 class GoodreadsSpider(scrapy.Spider):
@@ -16,15 +16,15 @@ class GoodreadsSpider(scrapy.Spider):
     def load_urls(self):
         urls = []
         try:
-            # Load URLs from package data
-            urls_data = pkgutil.get_data('goodreads_scraper', 'data/URLs.csv')
-            if urls_data:
-                for line in urls_data.decode('utf-8').splitlines():
-                    url = line.strip()
+            data_dir = Path(__file__).parent.parent / 'data'
+            urls_file = data_dir / 'URLs.csv'
+            
+            with open(urls_file, 'r', encoding='utf-8') as f:
+                for line in f:
+                    url = line.strip().strip(',')
                     if url:
                         urls.append(url)
-            else:
-                self.logger.error("URLs.csv not found in package data")
+            self.logger.info(f"Loaded {len(urls)} URLs")
         except Exception as e:
             self.logger.error(f"Error loading URLs: {e}")
         return urls
@@ -32,15 +32,15 @@ class GoodreadsSpider(scrapy.Spider):
     def load_xpaths(self):
         xpaths = []
         try:
-            # Load XPaths from package data
-            xpath_data = pkgutil.get_data('goodreads_scraper', 'data/xpath.csv')
-            if xpath_data:
-                for line in xpath_data.decode('utf-8').splitlines():
+            data_dir = Path(__file__).parent.parent / 'data'
+            xpath_file = data_dir / 'xpath.csv'
+            
+            with open(xpath_file, 'r', encoding='utf-8') as f:
+                for line in f:
                     xpath = line.strip()
                     if xpath:
                         xpaths.append(xpath)
-            else:
-                self.logger.error("xpath.csv not found in package data")
+            self.logger.info(f"Loaded {len(xpaths)} XPath patterns")
         except Exception as e:
             self.logger.error(f"Error loading XPaths: {e}")
         return xpaths
