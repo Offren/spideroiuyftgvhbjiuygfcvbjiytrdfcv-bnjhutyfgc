@@ -1,16 +1,15 @@
 import json
+from scrapy.exceptions import DropItem
 
 class GoodreadsScraperPipeline:
     def __init__(self):
-        self.file = open('profiles.json', 'w')
         self.profiles = set()
 
     def process_item(self, item, spider):
         if item['url'] not in self.profiles:
             self.profiles.add(item['url'])
-            line = json.dumps(dict(item)) + "\n"
-            self.file.write(line)
-        return item
-        
+            return item
+        raise DropItem(f"Duplicate profile found: {item['url']}")
+
     def close_spider(self, spider):
-        self.file.close()
+        spider.logger.info(f"Total unique profiles found: {len(self.profiles)}")
