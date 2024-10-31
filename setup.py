@@ -8,6 +8,9 @@ setup(
     package_data={
         'goodreads_scraper': ['data/*.csv'],
     },
+    entry_points={
+        'scrapy': ['settings = goodreads_scraper.settings']
+    },
     install_requires=[
         'scrapy>=2.11.0',
         'scrapy-user-agents>=0.1.1'
