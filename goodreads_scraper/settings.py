@@ -29,12 +29,6 @@ AUTOTHROTTLE_START_DELAY = 5
 AUTOTHROTTLE_MAX_DELAY = 60
 AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 
-# Zyte-specific settings
-EXTENSIONS = {
-    'scrapy.extensions.throttle.AutoThrottle': None,
-    'sh_scrapy.extension.HubstorageExtension': 500,
-}
-
 # Memory management
 MEMUSAGE_ENABLED = True
 MEMUSAGE_LIMIT_MB = 950
@@ -46,7 +40,7 @@ RETRY_TIMES = 3
 RETRY_HTTP_CODES = [500, 502, 503, 504, 408, 429]
 
 # Cache settings
-HTTPCACHE_ENABLED = False  # Disable cache on Zyte
+HTTPCACHE_ENABLED = False
 
 # Log settings
 LOG_LEVEL = 'INFO'
