@@ -1,4 +1,3 @@
-# settings.py
 BOT_NAME = 'goodreads_scraper'
 
 SPIDER_MODULES = ['goodreads_scraper.spiders']
